@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket="wordcount-tfstate"
-    key = "wordcount-app.tfstate"
-    region = "eu-west-1"
-    encrypt= true
+    bucket         = "wordcount-tfstate"
+    key            = "wordcount-app.tfstate"
+    region         = "eu-west-1"
+    encrypt        = true
     dynamodb_table = "wordcount-tf-state-lock"
   }
 
@@ -37,7 +37,7 @@ locals {
   }
 }
 resource "random_pet" "lambda_bucket_name" {
-  prefix = "contacts-sf"
+  prefix = "wordcount-sf"
   length = 4
 }
 
