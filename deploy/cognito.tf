@@ -4,9 +4,9 @@ resource "aws_cognito_user_pool" "wordcount_user_pool" {
   alias_attributes         = ["email"]
   auto_verified_attributes = ["email"]
 
-  lambda_config {
-    pre_sign_up = aws_lambda_function.signup_lambda_function.arn
-  }
+   lambda_config {
+     pre_sign_up = aws_lambda_function.preSignup_lambda_function.arn
+   }
 
   verification_message_template {
     default_email_option  = "CONFIRM_WITH_LINK"
@@ -46,6 +46,8 @@ resource "aws_cognito_user_pool" "wordcount_user_pool" {
 resource "aws_cognito_user_pool_client" "wordcount_user_pool_client" {
   name                = "wordcountUserPoolClient"
   explicit_auth_flows = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_SRP_AUTH"]
+
+  generate_secret = true
 
   user_pool_id = aws_cognito_user_pool.wordcount_user_pool.id
 }
