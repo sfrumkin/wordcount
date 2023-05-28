@@ -4,9 +4,9 @@ resource "aws_cognito_user_pool" "wordcount_user_pool" {
   alias_attributes         = ["email"]
   auto_verified_attributes = ["email"]
 
-   lambda_config {
-     pre_sign_up = aws_lambda_function.preSignup_lambda_function.arn
-   }
+  lambda_config {
+    pre_sign_up = aws_lambda_function.preSignup_lambda_function.arn
+  }
 
   verification_message_template {
     default_email_option  = "CONFIRM_WITH_LINK"
