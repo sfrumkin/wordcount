@@ -30,10 +30,11 @@ provider "aws" {
 }
 
 locals {
-  prefix = var.prefix
+  prefix = "${var.prefix}-${terraform.workspace}"
   common_tags = {
     ApplicationName = var.ApplicationName
-    VPCname         = var.VPCname
+    Environment     = terraform.workspace
+    ManagedBy       = "Terraform"
   }
 }
 resource "random_pet" "lambda_bucket_name" {

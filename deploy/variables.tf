@@ -7,10 +7,6 @@ variable "aws_region" {
   default = "eu-west-1"
 }
 
-variable "VPCname" {
-  default = "sfrumkin"
-}
-
 variable "ApplicationName" {
   default = "wordcount"
 }
