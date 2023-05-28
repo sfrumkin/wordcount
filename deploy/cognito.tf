@@ -39,13 +39,11 @@ resource "aws_cognito_user_pool" "wordcount_user_pool" {
     }
   }
 
-
-
 }
 
 resource "aws_cognito_user_pool_client" "wordcount_user_pool_client" {
   name                = "wordcountUserPoolClient"
-  explicit_auth_flows = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_SRP_AUTH"]
+  explicit_auth_flows = ["ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_SRP_AUTH"]
 
   generate_secret = true
 
