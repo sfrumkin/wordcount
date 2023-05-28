@@ -42,6 +42,7 @@ resource "aws_iam_policy" "lambda_policy" {
         "Action" : [
           "cognito-idp:ListUsers",
           "cognito-idp:AdminCreateUser",
+          "cognito-idp:AdminInitiateAuth",
           "cognito-idp:SignUp"
         ],
         "Resource" : "arn:aws:cognito-idp:*:*"

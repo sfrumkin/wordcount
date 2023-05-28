@@ -78,3 +78,44 @@ resource "aws_lambda_permission" "preSignUp" {
   principal     = "cognito-idp.amazonaws.com"
   source_arn    = aws_cognito_user_pool.wordcount_user_pool.arn
 }
+
+#########################################################
+################ Signin Lambda ##########################
+#########################################################
+data "archive_file" "signin_lambda_package" {
+  type        = "zip"
+  source_file = "${path.module}/../src/signin.py"
+  output_path = "signin.zip"
+}
+
+resource "aws_lambda_function" "signin_lambda_function" {
+  function_name    = "signin"
+  filename         = "signin.zip"
+  source_code_hash = data.archive_file.signin_lambda_package.output_base64sha256
+  role             = aws_iam_role.lambda_role.arn
+  runtime          = "python3.9"
+  handler          = "signin.lambda_handler"
+  timeout          = 60
+
+  vpc_config {
+    subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
+    security_group_ids = [aws_security_group.lambda-vpc-sg.id]
+  }
+
+
+  environment {
+    variables = {
+      COGNITO_USER_POOL_ID       = aws_cognito_user_pool.wordcount_user_pool.id
+      COGNITO_POOL_CLIENT_ID     = aws_cognito_user_pool_client.wordcount_user_pool_client.id
+      COGNITO_POOL_CLIENT_SECRET = aws_cognito_user_pool_client.wordcount_user_pool_client.client_secret
+      REGION                     = var.aws_region
+    }
+  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-signin"
+    },
+  )
+}
+
