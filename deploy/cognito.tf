@@ -15,11 +15,12 @@ resource "aws_cognito_user_pool" "wordcount_user_pool" {
   }
 
   password_policy {
-    minimum_length    = 8
-    require_lowercase = true
-    require_numbers   = true
-    require_symbols   = true
-    require_uppercase = true
+    temporary_password_validity_days = 7
+    minimum_length                   = 8
+    require_lowercase                = true
+    require_numbers                  = true
+    require_symbols                  = true
+    require_uppercase                = true
   }
 
   username_configuration {
@@ -39,6 +40,13 @@ resource "aws_cognito_user_pool" "wordcount_user_pool" {
     }
   }
 
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-wordcount_user_pool"
+    },
+  )
+
 }
 
 resource "aws_cognito_user_pool_client" "wordcount_user_pool_client" {
@@ -48,6 +56,7 @@ resource "aws_cognito_user_pool_client" "wordcount_user_pool_client" {
   generate_secret = true
 
   user_pool_id = aws_cognito_user_pool.wordcount_user_pool.id
+
 }
 
 resource "aws_cognito_user_pool_domain" "wordcount" {

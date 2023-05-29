@@ -14,7 +14,7 @@ resource "aws_lambda_function" "signup_lambda_function" {
   role             = aws_iam_role.lambda_role.arn
   runtime          = "python3.9"
   handler          = "signup.lambda_handler"
-  timeout          = 60
+  timeout          = 20
 
   vpc_config {
     subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
@@ -95,7 +95,7 @@ resource "aws_lambda_function" "signin_lambda_function" {
   role             = aws_iam_role.lambda_role.arn
   runtime          = "python3.9"
   handler          = "signin.lambda_handler"
-  timeout          = 60
+  timeout          = 20
 
   vpc_config {
     subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
@@ -115,6 +115,44 @@ resource "aws_lambda_function" "signin_lambda_function" {
     local.common_tags,
     {
       Name = "${local.prefix}-signin"
+    },
+  )
+}
+
+#########################################################
+################ WordCount Lambda ##########################
+#########################################################
+data "archive_file" "wordcount_lambda_package" {
+  type        = "zip"
+  source_file = "${path.module}/../src/countWords.py"
+  output_path = "countWords.zip"
+}
+
+resource "aws_lambda_function" "countWords_lambda_function" {
+  function_name    = "countWords"
+  filename         = "countWords.zip"
+  source_code_hash = data.archive_file.wordcount_lambda_package.output_base64sha256
+  role             = aws_iam_role.wordcount_role.arn
+  runtime          = "python3.9"
+  handler          = "countWords.lambda_handler"
+  timeout          = 60
+
+  vpc_config {
+    subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
+    security_group_ids = [aws_security_group.lambda-vpc-sg.id]
+  }
+
+
+  environment {
+    variables = {
+      BUCKET_NAME = random_pet.bucket_name.id
+      REGION      = var.aws_region
+    }
+  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-countWords"
     },
   )
 }

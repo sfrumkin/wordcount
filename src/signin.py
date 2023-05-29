@@ -43,30 +43,26 @@ def initiate_auth(client, username, password):
 
 def lambda_handler(event, context):
     client = boto3.client('cognito-idp')
+    body = json.loads(event['body']) 
     for field in ["username", "password"]:
-        if event.get(field) is None:
-            return  {"error": True, 
-                        "success": False, 
-                        "message": f"{field} is required", 
-                        "data": None}
-    username = event['username']
-    password = event['password']
+        if body.get(field) is None:
+            return {"statusCode": 400, 
+                "body": f"{field} is required"}    
+    username = body['username']
+    password = body['password']
     resp, msg = initiate_auth(client, username, password)
     if msg != None:
-        return {'message': msg, 
-                "error": True, "success": False, "data": None}
+         return {"statusCode": 401, 
+                "body": msg}
     if resp.get("AuthenticationResult"):
-        return {'message': "success", 
-                "error": False, 
-                "success": True, 
-                "data": {
+        return {"statusCode": 200, 
+                "body": json.dumps({
                 "id_token": resp["AuthenticationResult"]["IdToken"],
                 "refresh_token": resp["AuthenticationResult"]["RefreshToken"],
                 "access_token": resp["AuthenticationResult"]["AccessToken"],
                 "expires_in": resp["AuthenticationResult"]["ExpiresIn"],
                 "token_type": resp["AuthenticationResult"]["TokenType"]
-                }}
+                })}
     else: #this code block is relevant only when MFA is enabled
-        return {"error": True, 
-            "success": False, 
-            "data": None, "message": None}
+        return {"statusCode": 400, 
+                "body": 'Some error'}
