@@ -3,26 +3,37 @@ resource "aws_vpc" "lambda-vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  tags = {
-    Name = "lambda-vpc"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-lambda-vpc"
+    },
+  )
+
 }
 
 resource "aws_subnet" "lambda-vpc-subnet_public" {
   vpc_id                  = aws_vpc.lambda-vpc.id
   cidr_block              = "10.0.0.0/19"
   map_public_ip_on_launch = true
-  tags = {
-    Name = "lambda-vpc-subnet-public"
-  }
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-lambda-vpc-subnet-public"
+    },
+  )
 }
 
 resource "aws_internet_gateway" "internet_gateway" {
   vpc_id = aws_vpc.lambda-vpc.id
 
-  tags = {
-    Name = "internet-gateway"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-internet-gateway"
+    },
+  )
 }
 
 resource "aws_route_table" "route_table_public" {
@@ -33,9 +44,12 @@ resource "aws_route_table" "route_table_public" {
     gateway_id = aws_internet_gateway.internet_gateway.id
   }
 
-  tags = {
-    Name = "route-table-public"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-route-table-public"
+    },
+  )
 }
 
 resource "aws_route_table_association" "route_table_association_public" {
@@ -46,18 +60,25 @@ resource "aws_route_table_association" "route_table_association_public" {
 resource "aws_eip" "eip" {
   vpc        = true
   depends_on = [aws_internet_gateway.internet_gateway]
-  tags = {
-    Name = "eip"
-  }
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-eip"
+    },
+  )
 }
 
 resource "aws_nat_gateway" "nat_gateway" {
   allocation_id = aws_eip.eip.id
   subnet_id     = aws_subnet.lambda-vpc-subnet_public.id
 
-  tags = {
-    Name = "nat-gateway"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-nat-gateway"
+    },
+  )
 }
 
 resource "aws_subnet" "lambda-vpc-subnet-private" {
@@ -66,9 +87,12 @@ resource "aws_subnet" "lambda-vpc-subnet-private" {
   availability_zone       = "eu-west-1a"
   map_public_ip_on_launch = false
 
-  tags = {
-    Name = "lambda-vpc-subnet-private"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-lambda-vpc-subnet-private"
+    },
+  )
 }
 
 resource "aws_route_table" "route_table_private" {
@@ -79,9 +103,12 @@ resource "aws_route_table" "route_table_private" {
     nat_gateway_id = aws_nat_gateway.nat_gateway.id
   }
 
-  tags = {
-    Name = "route-table-private"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-route-table-private"
+    },
+  )
 }
 
 resource "aws_route_table_association" "route_table_association_private" {
@@ -111,9 +138,12 @@ resource "aws_default_network_acl" "default_network_acl" {
     to_port    = 0
   }
 
-  tags = {
-    Name = "default-network-acl"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-default-network-acl"
+    },
+  )
 }
 resource "aws_security_group" "lambda-vpc-sg" {
   name_prefix = "lambda-vpc-sg"
@@ -131,11 +161,13 @@ resource "aws_security_group" "lambda-vpc-sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-    # cidr_blocks = ["127.0.0.1/32"]
 
   }
 
-  tags = {
-    Name = "default-security-group"
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "${local.prefix}-default-security-group"
+    },
+  )
 }
