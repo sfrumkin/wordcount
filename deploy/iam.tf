@@ -73,11 +73,7 @@ resource "aws_iam_policy" "wordcount_policy" {
         "ec2:CreateNetworkInterface",
         "ec2:DescribeNetworkInterfaces",
         "ec2:DeleteNetworkInterface",
-        "s3:DeleteObject",
-        "s3:ListBucket",
-        "s3:HeadObject",
         "s3:GetObject",
-        "s3:GetObjectVersion",
         "s3:PutObject"
       ]
       Resource = ["*"]
