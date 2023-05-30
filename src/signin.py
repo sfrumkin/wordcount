@@ -67,6 +67,6 @@ def lambda_handler(event, context):
                 "expires_in": resp["AuthenticationResult"]["ExpiresIn"],
                 "token_type": resp["AuthenticationResult"]["TokenType"]
                 })}
-    else: #this code block is relevant only when MFA is enabled
-        return {"statusCode": 400, 
-                "body": 'Some error'}
+                
+    return {"statusCode": 400, 
+            "body": 'Some error'}
