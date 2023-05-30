@@ -23,12 +23,18 @@ To run load test:
 
 - Prerequisite: Install k6
 - Update BASE_URL in script below to be as in  the output of the terraform apply command
+- Use "dev" workspace
+
+Run the following
+
+    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform workspace new dev
+    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform workspace select dev
 
 Run the following
 
     k6 run test\k6-load.js
 
-Note: Currently the terraform automatically confirms the sign up of a new user - for automation purposes.  To remove this remove the pre_sign_up in lambda section of cognito.tf
+Note: Currently the terraform workspace "dev" automatically confirms the sign up of a new user - for automation purposes.  Any other terraform workspace will need to confirm manually the sign up of a new user.
 
 Thanks
 

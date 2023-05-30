@@ -24,12 +24,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "wordcount-encrypt
   }
 }
 
-resource "aws_s3_bucket_acl" "wordcount_bucket_acl" {
-  bucket     = aws_s3_bucket.wordcount-bucket.bucket
-  acl        = "public-read-write"
-  depends_on = [aws_s3_bucket_ownership_controls.s3_bucket_acl_ownership]
-}
-
 resource "aws_s3_bucket_public_access_block" "wordcount_public_block" {
   bucket = aws_s3_bucket.wordcount-bucket.bucket
 

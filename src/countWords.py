@@ -45,8 +45,14 @@ def writeDictToFile(iDict, fileN):
 
 def lambda_handler(event, context):
 
-    file_upload = base64.b64decode(event["body"])
-    texts=file_upload.decode('utf-8')
+    try:
+        file_upload = base64.b64decode(event["body"])
+        texts=file_upload.decode('utf-8')
+    except Exception as e:
+        return {
+            "statusCode": 400,
+            "body": "html file sent not sent properly"
+        }
 
     wordsDict = generateDict(texts)
 
