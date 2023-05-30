@@ -29,12 +29,14 @@ def upload_to_aws(local_file, s3_file):
 def generateDict(texts):
     wordsDict={}
 
-    for x in re.split(f'[{punctuation}{whitespace}]', texts):
-        xLower=x.strip(punctuation).lower()
-        if xLower in wordsDict:
-            wordsDict[xLower]+=1
-        elif xLower:
-            wordsDict[xLower]=1
+    for word in re.split(f'[{punctuation}{whitespace}]', texts):
+        wordLower=word.strip(punctuation).lower()
+        if not wordLower:
+            continue
+        if wordLower in wordsDict:
+            wordsDict[wordLower]+=1
+        else:
+            wordsDict[wordLower]=1
     
     return wordsDict
 
