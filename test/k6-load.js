@@ -6,6 +6,7 @@ const BASE_URL = 'https://5d9g6z4c31.execute-api.eu-west-1.amazonaws.com/serverl
 const DEBUG = true;
 
 const start = Date.now();
+const myPwd = 'ABCabc123!';
 
 const ExecutionType = {
   load:   'load',
@@ -86,9 +87,6 @@ function formatDate(date) {
 
 function DebugOrLog(textToLog){
   if (DEBUG){
-      var millis = Date.now() - start; // we get the ms ellapsed from the start of the test
-      var time = Math.floor(millis / 1000); // in seconds
-      // console.log(`${time}se: ${textToLog}`); // se = Seconds elapsed
       console.log(`${textToLog}`); 
   }
 }
@@ -123,7 +121,6 @@ export function BackendFlowTest(authToken){
 
   });
 
-  //sleep(1);
 }
 
 export function AccountSetup() {
@@ -136,7 +133,7 @@ export function AccountSetup() {
     let res = http.post(`${BASE_URL}/signup`, JSON.stringify({
       email: user + '@example.com',
       username: user,
-      password: 'ABCabc123!',
+      password: myPwd,
       name: user,
     }), {headers: {
         'Content-Type': 'application/json'
@@ -151,7 +148,7 @@ export function AccountSetup() {
       
     let loginRes = http.post(`${BASE_URL}/signin`, JSON.stringify({
       username: user,
-      password: 'ABCabc123!'
+      password: myPwd,
     }),{
       headers: {
       'Content-Type': 'application/json'
@@ -183,15 +180,15 @@ export function setup() {
   let res = http.post(`${BASE_URL}/signup`, JSON.stringify({
     email: user + '@example.com',
     username: user,
-    password: 'ABCabc123!',
+    password: myPwd,
     name: user,
 }), {headers: {
       'Content-Type': 'application/json'
   }}); 
 
   const isSuccessfulRequest = check(res, { 
-      'created user': (r) => r.status === 201 
-  }); //201 = created
+      'created user': (r) => r.status === 200 
+  }); //200 = created
 
   if (isSuccessfulRequest){
       DebugOrLog(`The user ${user} was created successfully!`);
@@ -204,7 +201,7 @@ export function setup() {
 
   let loginRes = http.post(`${BASE_URL}/signin`, JSON.stringify({
     username: user,
-    password: 'ABCabc123!'
+    password: myPwd,
   }),{
     headers: {
     'Content-Type': 'application/json'
