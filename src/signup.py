@@ -21,13 +21,14 @@ def lambda_handler(event, context):
     body = json.loads(event['body']) 
     for field in ["username", "email", "password", "name"]:        
         if not body.get(field):
-            print('Missing field')
             return {"statusCode": 400, 
-                "body": "Missing field: " + field}
+                "body": f'Missing field: {field}' }
+
     username = body['username']
     email = body["email"]
     password = body['password']
     name = body["name"]
+
     client = boto3.client('cognito-idp')
     try:
         resp = client.sign_up(
@@ -56,29 +57,23 @@ def lambda_handler(event, context):
             }
             ])
     except client.exceptions.UsernameExistsException as e:
-        print(str(e))
         return {"statusCode": 400, 
             "body": "This username already exists"
             }
     except client.exceptions.InvalidPasswordException as e:
-        print(str(e))            
         return {"statusCode": 401, 
             "body": "Password should have Caps,\
                         Special chars, Numbers"
                         }
     except client.exceptions.UserLambdaValidationException as e:
-        print(str(e))
         return {"statusCode": 400, 
             "body": "Email already exists"}
     
     except Exception as e:
-        print(str(e))
         return {"statusCode": 400, 
                 "body": str(e)
                 }
     
-    print('status 200')
     return {"statusCode": 200,
-            "body": "Please confirm your signup, \
-                        check Email for validation code"
+            "body": "Please confirm your signup, check Email for validation code"
             }

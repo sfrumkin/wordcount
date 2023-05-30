@@ -31,34 +31,30 @@ def lambda_handler(event, context):
     texts=file_upload.decode('utf-8')
     
     wordsDict={}
-    for x in re.split('['+punctuation+ whitespace+']', texts):
+    for x in re.split(f'[{punctuation}{whitespace}]', texts):
         xLower=x.strip(punctuation).lower()
         if xLower in wordsDict:
             wordsDict[xLower]+=1
         elif len(xLower)>0:
             wordsDict[xLower]=1
-    print(wordsDict)
+
     jsonObj = json.dumps(wordsDict,indent=4)
     with open(tmpFile, "w") as outfile:
         outfile.write(jsonObj)
     try:
-        url = upload_to_aws(tmpFile, str(uuid.uuid4())+'.txt' )
+        url = upload_to_aws(tmpFile, f'{str(uuid.uuid4())}.txt' )
         return {
             "statusCode": 200,
             "body": json.dumps({'url': url})
         }
     except FileNotFoundError:
-        return {"error": False, 
-                "success": True, 
-                "message": "File Not Found", 
-                "data": None}
+        return {
+            "statusCode": 404,
+            "body": "File Not Found"
+        }
     except NoCredentialsError:
-        return {"error": False, 
-                "success": True, 
-                "message": "No credentials", 
-                "data": None}
+       return {
+            "statusCode": 401,
+            "body": "No Credentials"
+        }
 
-
-# if __name__ == "__main__":
-#     fileN= open('C:\\Users\\sfrum\\OneDrive\\Documents\\test.html', "rb")
-#     lambda_handler({'body':base64.b64encode(fileN.read())}, {})
