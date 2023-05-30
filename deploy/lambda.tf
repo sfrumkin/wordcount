@@ -11,7 +11,7 @@ resource "aws_lambda_function" "signup_lambda_function" {
   function_name    = "signUp"
   filename         = "signup.zip"
   source_code_hash = data.archive_file.signup_lambda_package.output_base64sha256
-  role             = aws_iam_role.lambda_role.arn
+  role             = aws_iam_role.signup_role.arn
   runtime          = "python3.9"
   handler          = "signup.lambda_handler"
   timeout          = 20
@@ -53,7 +53,7 @@ resource "aws_lambda_function" "preSignup_lambda_function" {
   function_name    = "preSignUp"
   filename         = "preSignup.zip"
   source_code_hash = data.archive_file.preSignup_lambda_package.output_base64sha256
-  role             = aws_iam_role.lambda_role.arn
+  role             = aws_iam_role.signup_role.arn
   runtime          = "python3.9"
   handler          = "preSignup.lambda_handler"
   timeout          = 10
@@ -92,7 +92,7 @@ resource "aws_lambda_function" "signin_lambda_function" {
   function_name    = "signin"
   filename         = "signin.zip"
   source_code_hash = data.archive_file.signin_lambda_package.output_base64sha256
-  role             = aws_iam_role.lambda_role.arn
+  role             = aws_iam_role.signin_role.arn
   runtime          = "python3.9"
   handler          = "signin.lambda_handler"
   timeout          = 20

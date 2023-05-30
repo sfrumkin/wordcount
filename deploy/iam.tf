@@ -9,14 +9,14 @@ data "aws_iam_policy_document" "lambda_assume_role_policy" {
   }
 }
 
-resource "aws_iam_role" "lambda_role" {
-  name               = "lambda-lambdaRole-waf"
+resource "aws_iam_role" "signup_role" {
+  name               = "signup_role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
 }
 
 
-resource "aws_iam_policy" "lambda_policy" {
-  name = "example-policy"
+resource "aws_iam_policy" "signup_policy" {
+  name = "signup_policy"
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -40,9 +40,6 @@ resource "aws_iam_policy" "lambda_policy" {
         "Sid" : "Cognito",
         "Effect" : "Allow",
         "Action" : [
-          "cognito-idp:ListUsers",
-          "cognito-idp:AdminCreateUser",
-          "cognito-idp:AdminInitiateAuth",
           "cognito-idp:SignUp"
         ],
         "Resource" : "arn:aws:cognito-idp:*:*"
@@ -50,9 +47,53 @@ resource "aws_iam_policy" "lambda_policy" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_policy_attach" {
-  policy_arn = aws_iam_policy.lambda_policy.arn
-  role       = aws_iam_role.lambda_role.name
+resource "aws_iam_role_policy_attachment" "signup_policy_attach" {
+  policy_arn = aws_iam_policy.signup_policy.arn
+  role       = aws_iam_role.signup_role.name
+}
+
+
+resource "aws_iam_role" "signin_role" {
+  name               = "signin_role"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
+}
+
+
+resource "aws_iam_policy" "signin_policy" {
+  name = "signin_policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ]
+      Resource = ["arn:aws:logs:*:*:*"]
+      }, {
+      Effect = "Allow"
+      Action = [
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface"
+      ]
+      Resource = ["*"]
+      },
+      {
+        "Sid" : "Cognito",
+        "Effect" : "Allow",
+        "Action" : [
+          "cognito-idp:AdminInitiateAuth"
+        ],
+        "Resource" : "arn:aws:cognito-idp:*:*"
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "signin_policy_attach" {
+  policy_arn = aws_iam_policy.signin_policy.arn
+  role       = aws_iam_role.signin_role.name
 }
 
 resource "aws_iam_policy" "wordcount_policy" {
@@ -73,11 +114,7 @@ resource "aws_iam_policy" "wordcount_policy" {
         "ec2:CreateNetworkInterface",
         "ec2:DescribeNetworkInterfaces",
         "ec2:DeleteNetworkInterface",
-        "s3:DeleteObject",
-        "s3:ListBucket",
-        "s3:HeadObject",
         "s3:GetObject",
-        "s3:GetObjectVersion",
         "s3:PutObject"
       ]
       Resource = ["*"]
