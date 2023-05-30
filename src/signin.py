@@ -43,16 +43,20 @@ def initiate_auth(client, username, password):
 
 def lambda_handler(event, context):
     client = boto3.client('cognito-idp')
+    
     body = json.loads(event['body']) 
+    
     for field in ["username", "password"]:
         if body.get(field) is None:
             return {"statusCode": 400, 
                 "body": f"{field} is required"}    
+    
     username = body['username']
     password = body['password']
+    
     resp, msg = initiate_auth(client, username, password)
     if msg != None:
-         return {"statusCode": 401, 
+        return {"statusCode": 401, 
                 "body": msg}
     if resp.get("AuthenticationResult"):
         return {"statusCode": 200, 
