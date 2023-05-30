@@ -27,14 +27,6 @@ resource "aws_iam_policy" "signup_policy" {
         "logs:PutLogEvents"
       ]
       Resource = ["arn:aws:logs:*:*:*"]
-      }, {
-      Effect = "Allow"
-      Action = [
-        "ec2:CreateNetworkInterface",
-        "ec2:DescribeNetworkInterfaces",
-        "ec2:DeleteNetworkInterface"
-      ]
-      Resource = ["*"]
       },
       {
         "Sid" : "Cognito",
@@ -71,14 +63,6 @@ resource "aws_iam_policy" "signin_policy" {
         "logs:PutLogEvents"
       ]
       Resource = ["arn:aws:logs:*:*:*"]
-      }, {
-      Effect = "Allow"
-      Action = [
-        "ec2:CreateNetworkInterface",
-        "ec2:DescribeNetworkInterfaces",
-        "ec2:DeleteNetworkInterface"
-      ]
-      Resource = ["*"]
       },
       {
         "Sid" : "Cognito",
@@ -111,9 +95,6 @@ resource "aws_iam_policy" "wordcount_policy" {
       }, {
       Effect = "Allow"
       Action = [
-        "ec2:CreateNetworkInterface",
-        "ec2:DescribeNetworkInterfaces",
-        "ec2:DeleteNetworkInterface",
         "s3:GetObject",
         "s3:PutObject"
       ]

@@ -16,11 +16,6 @@ resource "aws_lambda_function" "signup_lambda_function" {
   handler          = "signup.lambda_handler"
   timeout          = 20
 
-  vpc_config {
-    subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
-    security_group_ids = [aws_security_group.lambda-vpc-sg.id]
-  }
-
 
   environment {
     variables = {
@@ -58,11 +53,6 @@ resource "aws_lambda_function" "preSignup_lambda_function" {
   handler          = "preSignup.lambda_handler"
   timeout          = 10
 
-  vpc_config {
-    subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
-    security_group_ids = [aws_security_group.lambda-vpc-sg.id]
-  }
-
   tags = merge(
     local.common_tags,
     {
@@ -97,12 +87,6 @@ resource "aws_lambda_function" "signin_lambda_function" {
   handler          = "signin.lambda_handler"
   timeout          = 20
 
-  vpc_config {
-    subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
-    security_group_ids = [aws_security_group.lambda-vpc-sg.id]
-  }
-
-
   environment {
     variables = {
       COGNITO_USER_POOL_ID       = aws_cognito_user_pool.wordcount_user_pool.id
@@ -136,12 +120,6 @@ resource "aws_lambda_function" "countWords_lambda_function" {
   runtime          = "python3.9"
   handler          = "countWords.lambda_handler"
   timeout          = 60
-
-  vpc_config {
-    subnet_ids         = [aws_subnet.lambda-vpc-subnet-private.id]
-    security_group_ids = [aws_security_group.lambda-vpc-sg.id]
-  }
-
 
   environment {
     variables = {
