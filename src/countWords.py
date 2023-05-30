@@ -9,6 +9,7 @@ import uuid
 import os
 
 tmpFile="/tmp/results.json"
+
 def upload_to_aws(local_file, s3_file):
     s3 = boto3.client('s3')
 
@@ -25,22 +26,32 @@ def upload_to_aws(local_file, s3_file):
     print("Upload Successful", url)
     return url
 
-def lambda_handler(event, context):
-
-    file_upload = base64.b64decode(event["body"])
-    texts=file_upload.decode('utf-8')
-    
+def generateDict(texts):
     wordsDict={}
+
     for x in re.split(f'[{punctuation}{whitespace}]', texts):
         xLower=x.strip(punctuation).lower()
         if xLower in wordsDict:
             wordsDict[xLower]+=1
-        elif len(xLower)>0:
+        elif xLower:
             wordsDict[xLower]=1
+    
+    return wordsDict
 
-    jsonObj = json.dumps(wordsDict,indent=4)
-    with open(tmpFile, "w") as outfile:
+def writeDictToFile(iDict, fileN):
+    jsonObj = json.dumps(iDict,indent=4)
+    with open(fileN, "w") as outfile:
         outfile.write(jsonObj)
+
+def lambda_handler(event, context):
+
+    file_upload = base64.b64decode(event["body"])
+    texts=file_upload.decode('utf-8')
+
+    wordsDict = generateDict(texts)
+
+    writeDictToFile(wordsDict, tmpFile)
+
     try:
         url = upload_to_aws(tmpFile, f'{str(uuid.uuid4())}.txt' )
         return {

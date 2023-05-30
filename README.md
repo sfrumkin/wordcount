@@ -28,4 +28,7 @@ Run the following
 
     k6 run test\k6-load.js
 
+Note: Currently the terraform automatically confirms the sign up of a new user - for automation purposes.  To remove this remove the pre_sign_up in lambda section of cognito.tf
+
 Thanks
+
