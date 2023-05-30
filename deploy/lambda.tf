@@ -42,6 +42,7 @@ data "archive_file" "preSignup_lambda_package" {
   type        = "zip"
   source_file = "${path.module}/../src/preSignup.py"
   output_path = "preSignup.zip"
+
 }
 
 resource "aws_lambda_function" "preSignup_lambda_function" {
@@ -59,6 +60,7 @@ resource "aws_lambda_function" "preSignup_lambda_function" {
       Name = "${local.prefix}-preSignup"
     },
   )
+
 }
 
 resource "aws_lambda_permission" "preSignUp" {
@@ -67,6 +69,7 @@ resource "aws_lambda_permission" "preSignUp" {
   function_name = aws_lambda_function.preSignup_lambda_function.function_name
   principal     = "cognito-idp.amazonaws.com"
   source_arn    = aws_cognito_user_pool.wordcount_user_pool.arn
+
 }
 
 #########################################################

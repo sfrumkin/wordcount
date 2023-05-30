@@ -2,7 +2,7 @@ import http from 'k6/http';
 import {check, group, sleep, fail } from 'k6';
 import encoding from 'k6/encoding';
 
-const BASE_URL = 'https://5d9g6z4c31.execute-api.eu-west-1.amazonaws.com/serverless_gw_stage';
+const BASE_URL = 'https://v2aq5x8rw1.execute-api.eu-west-1.amazonaws.com/serverless_gw_stage';
 const DEBUG = true;
 
 const start = Date.now();
