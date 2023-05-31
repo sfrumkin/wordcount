@@ -8,12 +8,14 @@ from botocore.exceptions import NoCredentialsError
 import uuid
 import os
 
-tmpFile="/tmp/results.json"
+tmpFile = "/tmp/results.json"
+
 
 def upload_to_aws(local_file, s3_file):
     s3 = boto3.client('s3')
 
     s3.upload_file(local_file, os.environ['BUCKET_NAME'], s3_file)
+
     url = s3.generate_presigned_url(
         ClientMethod='get_object',
         Params={
@@ -23,57 +25,66 @@ def upload_to_aws(local_file, s3_file):
         ExpiresIn=24 * 3600
     )
 
-    print("Upload Successful", url)
     return url
 
-def generateDict(texts):
-    wordsDict={}
+
+def generate_words_counter(texts):
+    words_counter = {}
 
     for word in re.split(f'[{punctuation}{whitespace}]', texts):
-        wordLower=word.strip(punctuation).lower()
-        if not wordLower:
-            continue
-        if wordLower in wordsDict:
-            wordsDict[wordLower]+=1
-        else:
-            wordsDict[wordLower]=1
-    
-    return wordsDict
+        word_lower_case = word.strip(punctuation).lower()
 
-def writeDictToFile(iDict, fileN):
-    jsonObj = json.dumps(iDict,indent=4)
-    with open(fileN, "w") as outfile:
-        outfile.write(jsonObj)
+        if len(word_lower_case) == 0:
+            continue
+
+        if word_lower_case not in words_counter:
+            words_counter[word_lower_case] = 0
+
+        words_counter[word_lower_case] += 1
+    
+    return words_counter
+
+
+def save_word_counter(word_counter, file_name):
+    word_counter_json = json.dumps(word_counter, indent=4)
+
+    with open(file_name, "w") as outfile:
+        outfile.write(word_counter_json)
+
+
+def request_handler(event):
+    file_upload = base64.b64decode(event["body"])
+    return file_upload.decode('utf-8')
+
+
+def successful_response(url):
+    return create_answer(200, json.dumps({'url': url}))
+
+
+def create_answer(status_code, message):
+    return {
+        "statusCode": status_code,
+        "body": message
+    }
+
 
 def lambda_handler(event, context):
 
     try:
-        file_upload = base64.b64decode(event["body"])
-        texts=file_upload.decode('utf-8')
-    except Exception as e:
-        return {
-            "statusCode": 400,
-            "body": "html file sent not sent properly"
-        }
+        texts = request_handler(event)
 
-    wordsDict = generateDict(texts)
+        words_counter = generate_words_counter(texts)
 
-    writeDictToFile(wordsDict, tmpFile)
+        save_word_counter(words_counter, tmpFile)
 
-    try:
-        url = upload_to_aws(tmpFile, f'{str(uuid.uuid4())}.txt' )
-        return {
-            "statusCode": 200,
-            "body": json.dumps({'url': url})
-        }
+        url = upload_to_aws(tmpFile, f'{str(uuid.uuid4())}.txt')
+
+        return successful_response(url)
+
     except FileNotFoundError:
-        return {
-            "statusCode": 404,
-            "body": "File Not Found"
-        }
+        return create_answer(404, "File Not Found")
     except NoCredentialsError:
-       return {
-            "statusCode": 401,
-            "body": "No Credentials"
-        }
+        return create_answer(401, "No Credentials")
+    except Exception:
+        return create_answer(400, "Received HTML file was not sent properly")
 

@@ -2,7 +2,7 @@ import http from 'k6/http';
 import {check, group, sleep, fail } from 'k6';
 import encoding from 'k6/encoding';
 
-const BASE_URL = 'https://v2aq5x8rw1.execute-api.eu-west-1.amazonaws.com/serverless_gw_stage';
+const BASE_URL = 'https://1ixx35gil2.execute-api.eu-west-1.amazonaws.com/serverless_gw_stage';
 const DEBUG = true;
 
 const start = Date.now();
@@ -140,7 +140,7 @@ export function AccountSetup() {
     }}); 
 
     const isSuccessfulRequest = check(res, { 
-        'created user': (r) => r.status === 200
+        'created user': (r) => r.status === 201
     }); 
   });
 
@@ -187,7 +187,7 @@ export function setup() {
   }}); 
 
   const isSuccessfulRequest = check(res, { 
-      'created user': (r) => r.status === 200 
+      'created user': (r) => r.status === 201 
   }); //200 = created
 
   if (isSuccessfulRequest){
