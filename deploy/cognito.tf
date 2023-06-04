@@ -58,8 +58,3 @@ resource "aws_cognito_user_pool_client" "wordcount_user_pool_client" {
   user_pool_id = aws_cognito_user_pool.wordcount_user_pool.id
 
 }
-
-resource "aws_cognito_user_pool_domain" "wordcount" {
-  domain       = "wordcount-domain"
-  user_pool_id = aws_cognito_user_pool.wordcount_user_pool.id
-}
