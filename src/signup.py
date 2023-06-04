@@ -73,7 +73,7 @@ def lambda_handler(event, context):
     except client.exceptions.UserLambdaValidationException:
         return create_answer(400,"Email already exists")
     except Exception as e:
-        return create_answer(400, "An error occurred")
+        return create_answer(400, str(e))
 
     return create_answer(201, "Please confirm your signup, check Email for validation code")
 
