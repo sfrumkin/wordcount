@@ -12,13 +12,6 @@ permissions:
   id-token: write # required to use OIDC authentication
   contents: read # required to checkout the code from the repo
 
-- name: configure aws credentials
-  uses: aws-actions/configure-aws-credentials@v1
-  with:
-    role-to-assume: arn:aws:iam::543051889675:role/githubActionsRole
-    role-duration-seconds: 900 # the ttl of the session, in seconds.
-    aws-region: eu-central-1 # use your region here.
-
 jobs:
  terraform:
    name: "Terraform Infrastructure Change Management"
@@ -30,6 +23,13 @@ jobs:
        working-directory: ./deploy
  
    steps:
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::543051889675:role/githubActionsRole
+          role-duration-seconds: 900 # the ttl of the session, in seconds.
+          aws-region: eu-central-1 # use your region here.
+          
      - name: Checkout the repository to the runner
        uses: actions/checkout@v2
  
