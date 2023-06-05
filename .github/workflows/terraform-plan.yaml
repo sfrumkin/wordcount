@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   terraform:
-    name: "Terraform Infrastructure Change Management"
+    name: "Terraform Dev and Prod testing"
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -97,6 +97,7 @@ jobs:
         run: cd ../test && sh testAPIs.sh
 
       - name: Terraform destroy prod
+        if: always() && steps.apply_prod.outcome == 'success'
         id: destroy_prod
         run: terraform destroy -auto-approve
 
