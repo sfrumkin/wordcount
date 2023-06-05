@@ -21,7 +21,7 @@ This project uses the following AWS services:
 - Lambda functions
 - Public S3 bucket
 
-## Prerequisites:
+## Prerequisites for terraform backend:
 
 - create a bucket in S3 for tfstate
     - update the name in deploy/main.tf
@@ -31,13 +31,22 @@ This project uses the following AWS services:
 
 ## To run the terraform:
 
+- Running terraform installed on PC
 
-    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform init
-    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform fmt
-    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform validate
-    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform plan
-    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform apply
-    docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform destroy
+
+        terraform init
+        terraform fmt
+        terraform validate
+        terraform plan
+        terraform apply
+        terraform destroy
+
+
+- Alternatively you can run terraform from docker (will use specific version):
+
+
+        docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform
+
 
 > **_Note:_** Currently the terraform workspace "dev" automatically confirms the sign up of a new user - for automation purposes.  Any other terraform workspace will need to confirm manually the sign up of a new user.
 
@@ -46,19 +55,27 @@ This project uses the following AWS services:
 - Found at test/WordsCount.postman_collection
 - Create a variable named apigwUrl with the value as in the output of the terraform apply command
 
+## Shell script running curl commands:
+
+- will work on dev workspace out of the box.  On any other workspace, will need to confirm the emaii manually (press the link) and then re-run
+
+
+        cd test
+        sh testAPIs.sh
+
+
 ## Load tests:
 
 - Prerequisite: Install k6
-- Update BASE_URL in script below to be as in the output of the terraform apply command
 - Use "dev" workspace
 
 
-        docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform workspace new dev
-        docker-compose -f deploy/docker-compose.yml run  --workdir /infra/deploy --rm terraform workspace select dev
+        terraform workspace new dev
+        terraform workspace select dev
 
-- Run k6
+- Run k6 in shell
 
-        k6 run test\k6-load.js
+        k6 run test/k6-load.js --env BASE_URL=`cd deploy && terraform output --raw base_url`
 
 
 Thanks
