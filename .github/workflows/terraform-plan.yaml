@@ -90,7 +90,7 @@ jobs:
 
       - name: Confirm user email via cli
         id: confirmUserCli
-        run: aws cognito-idp admin-update-user-attributes --user-pool-id `terraform output --raw user_pool_id` --username sfrumkinab --user-attributes Name=email_verified,Value=true
+        run: aws cognito-idp admin-update-user-attributes --user-pool-id `terraform output --raw user_pool_id` --username sfrumkinab --user-attributes Name=email_verified,Value=true && aws cognito-idp admin-set-user-password --user-pool-id `terraform output --raw user_pool_id` --username sfrumkinab --password 1234!ABCdef --permanent
 
       - name: Test APIs
         id: testAPIs_prod
