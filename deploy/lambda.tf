@@ -48,7 +48,7 @@ data "archive_file" "preSignUp_lambda_package" {
 resource "aws_lambda_function" "preSignUp_lambda_function" {
   function_name    = "preSignUp"
   filename         = "preSignUp.zip"
-  source_code_hash = data.archive_file.preSignup_lambda_package.output_base64sha256
+  source_code_hash = data.archive_file.preSignUp_lambda_package.output_base64sha256
   role             = aws_iam_role.signup_role.arn
   runtime          = "python3.9"
   handler          = "preSignUp.lambda_handler"
