@@ -21,6 +21,7 @@ jobs:
         shell: bash
         # We keep Terraform files in the deploy directory.
         working-directory: ./deploy
+# steps
     steps:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v1
