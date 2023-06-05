@@ -23,14 +23,14 @@ jobs:
 # steps
     steps:
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::543051889675:role/githubActionsRole
           role-duration-seconds: 900 # the ttl of the session, in seconds.
           aws-region: eu-central-1 # use your region here.
 
       - name: Checkout the repository to the runner
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform with specified version on the runner
         uses: hashicorp/setup-terraform@v2
