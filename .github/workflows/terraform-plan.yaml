@@ -41,6 +41,10 @@ jobs:
         with:
           terraform_version: 1.4.6
 
+      - name: Terraform init
+        id: init
+        run: terraform init
+  
       - name: Terraform workspace new
         id: workspace_new
         run: terraform workspace new dev
@@ -48,10 +52,6 @@ jobs:
       - name: Terraform workspace select
         id: workspace_select
         run: terraform workspace select dev
-
-      - name: Terraform init
-        id: init
-        run: terraform init
 
       - name: Terraform format
         id: fmt
