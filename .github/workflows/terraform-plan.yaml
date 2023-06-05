@@ -67,7 +67,7 @@ jobs:
         run: cd ../test && sh testAPIs.sh
 
       - name: Terraform destroy
-        if: steps.apply.outcome == 'success'
+        if: always() && steps.apply.outcome == 'success'
         id: destroy
         run: terraform destroy -auto-approve
         
