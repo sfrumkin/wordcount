@@ -5,7 +5,7 @@ resource "aws_cognito_user_pool" "wordcount_user_pool" {
   auto_verified_attributes = ["email"]
 
   lambda_config {
-    pre_sign_up = (terraform.workspace == "dev") ? aws_lambda_function.preSignup_lambda_function.arn : null
+    pre_sign_up = (terraform.workspace == "dev") ? aws_lambda_function.preSignUp_lambda_function.arn : null
   }
 
   verification_message_template {
