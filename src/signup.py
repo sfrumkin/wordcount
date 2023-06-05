@@ -71,7 +71,7 @@ def lambda_handler(event, context):
     except client.exceptions.InvalidPasswordException:
         return create_answer(401, "Password should have Caps, Special chars, Numbers")
     except client.exceptions.UserLambdaValidationException:
-        return create_answer(400,"Email already exists")
+        return create_answer(400,str(e))
     except Exception as e:
         return create_answer(400, str(e))
 
