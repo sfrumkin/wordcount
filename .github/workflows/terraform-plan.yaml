@@ -63,9 +63,10 @@ jobs:
 
       - name: Test APIs
         id: testAPIs
-        run: cd ../test && sh testAPIs.sh
+        run: terraform output --raw base_url && cd ../test && sh testAPIs.sh
 
       - name: Terraform destroy
+        if: steps.apply.conclusion == 'success'
         id: destroy
         run: terraform destroy -auto-approve
         
