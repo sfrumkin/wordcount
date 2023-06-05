@@ -5,8 +5,7 @@ on:
    branches:
    - main
    - use_github_actions
-   paths:
-   - terraform/**
+
 
 permissions:
   id-token: write # required to use OIDC authentication
