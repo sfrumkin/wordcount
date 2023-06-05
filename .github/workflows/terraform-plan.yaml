@@ -1,0 +1,51 @@
+name: "Terraform Plan"
+
+on:
+ push:
+   branches:
+   - main
+   - use_github_actions
+   paths:
+   - terraform/**
+
+permissions:
+  id-token: write # required to use OIDC authentication
+  contents: read # required to checkout the code from the repo
+
+- name: configure aws credentials
+  uses: aws-actions/configure-aws-credentials@v1
+  with:
+    role-to-assume: arn:aws:iam::543051889675:role/githubActionsRole
+    role-duration-seconds: 900 # the ttl of the session, in seconds.
+    aws-region: eu-central-1 # use your region here.
+
+jobs:
+ terraform:
+   name: "Terraform Infrastructure Change Management"
+   runs-on: ubuntu-latest
+   defaults:
+     run:
+       shell: bash
+       # We keep Terraform files in the deploy directory.
+       working-directory: ./deploy
+ 
+   steps:
+     - name: Checkout the repository to the runner
+       uses: actions/checkout@v2
+ 
+     - name: Setup Terraform with specified version on the runner
+       uses: hashicorp/setup-terraform@v2
+       with:
+         terraform_version: 1.4.6
+    
+     - name: Terraform init
+       id: init
+       run: terraform init
+
+     - name: Terraform format
+       id: fmt
+       run: terraform fmt -check
+
+     - name: Terraform validate
+       id: validate
+       run: terraform validate
