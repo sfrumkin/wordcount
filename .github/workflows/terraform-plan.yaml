@@ -6,8 +6,6 @@ on:
   push:
     branches:
     - main
-    - use_github_actions
-
 
 permissions:
   id-token: write # required to use OIDC authentication
