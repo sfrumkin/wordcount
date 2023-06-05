@@ -7,12 +7,14 @@ import botocore.exceptions
 from botocore.exceptions import NoCredentialsError
 import uuid
 import os
+from botocore.client import Config
 
 tmpFile = "/tmp/results.json"
+REGION = os.environ['REGION']
 
 
 def upload_to_aws(local_file, s3_file):
-    s3 = boto3.client('s3')
+    s3 = boto3.client('s3', endpoint_url=f'https://s3.{REGION}.amazonaws.com', config=Config(s3={'addressing_style': 'virtual'}))
 
     s3.upload_file(local_file, os.environ['BUCKET_NAME'], s3_file)
 
@@ -85,6 +87,6 @@ def lambda_handler(event, context):
         return create_answer(404, "File Not Found")
     except NoCredentialsError:
         return create_answer(401, "No Credentials")
-    except Exception:
-        return create_answer(400, "Received HTML file was not sent properly")
+    except Exception as e:
+        return create_answer(400, str(e))
 
