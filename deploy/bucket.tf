@@ -33,9 +33,26 @@ resource "aws_s3_bucket_public_access_block" "wordcount_public_block" {
   restrict_public_buckets = false
 }
 
-resource "aws_s3_bucket_ownership_controls" "s3_bucket_acl_ownership" {
+resource "aws_s3_bucket_policy" "allow_public_access" {
   bucket = aws_s3_bucket.wordcount-bucket.id
-  rule {
-    object_ownership = "ObjectWriter"
+  policy = data.aws_iam_policy_document.allow_public_access.json
+}
+
+data "aws_iam_policy_document" "allow_public_access" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket",
+    ]
+
+    resources = [
+      aws_s3_bucket.wordcount-bucket.arn,
+      "${aws_s3_bucket.wordcount-bucket.arn}/*",
+    ]
   }
 }
