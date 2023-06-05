@@ -40,7 +40,7 @@ resource "aws_lambda_function" "signup_lambda_function" {
 
 data "archive_file" "preSignup_lambda_package" {
   type        = "zip"
-  source_file = "${path.module}/../src/preSignup.py"
+  source_file = "${path.module}/../src/preSignUp.py"
   output_path = "preSignup.zip"
 
 }
