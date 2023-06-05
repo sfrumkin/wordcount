@@ -32,10 +32,6 @@ jobs:
       - name: Checkout the repository to the runner
         uses: actions/checkout@v3
 
-      - name: LS 
-        id: ls
-        run: ls -al ../
-
       - name: Setup Terraform with specified version on the runner
         uses: hashicorp/setup-terraform@v2
         with:
@@ -44,10 +40,6 @@ jobs:
       - name: Terraform init
         id: init
         run: terraform init
-  
-      - name: Terraform workspace new
-        id: workspace_new
-        run: terraform workspace new dev
 
       - name: Terraform workspace select
         id: workspace_select
