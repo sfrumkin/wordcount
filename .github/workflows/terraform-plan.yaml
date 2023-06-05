@@ -34,7 +34,7 @@ jobs:
 
       - name: LS 
         id: ls
-        run: ls -al
+        run: ls -al ../
 
       - name: Setup Terraform with specified version on the runner
         uses: hashicorp/setup-terraform@v2
