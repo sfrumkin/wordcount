@@ -13,7 +13,7 @@ permissions:
   contents: read # required to checkout the code from the repo
 
 jobs:
- terraform:
+  terraform:
    name: "Terraform Infrastructure Change Management"
    runs-on: ubuntu-latest
    defaults:
@@ -29,7 +29,7 @@ jobs:
           role-to-assume: arn:aws:iam::543051889675:role/githubActionsRole
           role-duration-seconds: 900 # the ttl of the session, in seconds.
           aws-region: eu-central-1 # use your region here.
-          
+
      - name: Checkout the repository to the runner
        uses: actions/checkout@v2
  
