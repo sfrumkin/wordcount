@@ -55,4 +55,4 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        run: cd ./deploy && terraform plan
+        run: cd ./deploy && ls ./../ && ls ./../src && terraform plan
