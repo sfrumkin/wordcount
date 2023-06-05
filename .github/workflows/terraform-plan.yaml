@@ -36,6 +36,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.4.6
+          terraform_wrapper: false
 
       - name: Terraform init
         id: init
@@ -66,7 +67,7 @@ jobs:
         run: terraform output --raw base_url && cd ../test && sh testAPIs.sh
 
       - name: Terraform destroy
-        if: steps.apply.conclusion == 'success'
+        if: steps.apply.outcome == 'success'
         id: destroy
         run: terraform destroy -auto-approve
         
