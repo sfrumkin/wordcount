@@ -58,3 +58,14 @@ resource "aws_cognito_user_pool_client" "wordcount_user_pool_client" {
   user_pool_id = aws_cognito_user_pool.wordcount_user_pool.id
 
 }
+
+resource "random_pet" "domain_name" {
+  prefix = "domain"
+  length = 4
+}
+
+resource "aws_cognito_user_pool_domain" "wordcount" {
+  domain       = random_pet.domain_name.id
+  user_pool_id = aws_cognito_user_pool.wordcount_user_pool.id
+}
+
