@@ -70,4 +70,22 @@ jobs:
         if: always() && steps.apply.outcome == 'success'
         id: destroy
         run: terraform destroy -auto-approve
-        
+
+      - name: Terraform workspace select
+        id: workspace_prod
+        run: terraform workspace select prod
+
+      - name: Terraform plan prod
+        id: plan_prod
+        run: terraform plan
+
+      - name: Terraform apply prod
+        id: apply_prod
+        run: terraform apply -auto-approve
+
+      - name: Terraform destroy prod
+        if: always() && steps.apply_prod.outcome == 'success'
+        id: destroy_prod
+        run: terraform destroy -auto-approve
+
+
