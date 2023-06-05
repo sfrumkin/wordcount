@@ -4,7 +4,8 @@ resource "random_pet" "bucket_name" {
 }
 
 resource "aws_s3_bucket" "wordcount-bucket" {
-  bucket = random_pet.bucket_name.id
+  bucket        = random_pet.bucket_name.id
+  force_destroy = true
 
   tags = merge(
     local.common_tags,
@@ -35,7 +36,27 @@ resource "aws_s3_bucket_public_access_block" "wordcount_public_block" {
 
 resource "aws_s3_bucket_policy" "allow_public_access" {
   bucket = aws_s3_bucket.wordcount-bucket.id
-  policy = data.aws_iam_policy_document.allow_public_access.json
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "MYBUCKETPOLICY"
+    Statement = [
+      {
+        Sid       = "PublicReadListGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+        ]
+        Resource = [
+          "${aws_s3_bucket.wordcount-bucket.arn}",
+          "${aws_s3_bucket.wordcount-bucket.arn}/*",
+        ]
+      },
+    ]
+  })
+
+  depends_on = [aws_s3_bucket_public_access_block.wordcount_public_block]
 }
 
 data "aws_iam_policy_document" "allow_public_access" {
