@@ -70,7 +70,7 @@ def lambda_handler(event, context):
         return create_answer(400, "This username already exists")
     except client.exceptions.InvalidPasswordException:
         return create_answer(401, "Password should have Caps, Special chars, Numbers")
-    except client.exceptions.UserLambdaValidationException:
+    except client.exceptions.UserLambdaValidationException as e:
         return create_answer(400,str(e))
     except Exception as e:
         return create_answer(400, str(e))
