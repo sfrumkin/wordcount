@@ -61,6 +61,10 @@ jobs:
         id: apply
         run: terraform apply -auto-approve
 
+      - name: Test APIs
+        id: testAPIs
+        run: cd ../test && sh testAPIs.sh
+
       - name: Terraform destroy
         id: destroy
         run: terraform destroy -auto-approve
