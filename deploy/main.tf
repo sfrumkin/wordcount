@@ -37,12 +37,6 @@ locals {
     ManagedBy       = "Terraform"
   }
 
-  only_in_dev_mapping = {
-    dev     = 1
-    default = 0
-    prod    = 0
-  }
-  only_in_dev = local.only_in_dev_mapping[terraform.workspace]
 }
 resource "random_pet" "lambda_bucket_name" {
   prefix = "wordcount-sf"
